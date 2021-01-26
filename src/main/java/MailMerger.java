@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 
@@ -34,16 +33,18 @@ final public class MailMerger extends HashMap<String, HashSet<String>> {
         if (delPos == -1)
             throw new StringIndexOutOfBoundsException("delimiter[" + delimiter + "], not found in[" + line + "]");
 
+        String userName = line.substring(0, delPos);
         String[] mails = line.substring(delPos + delimiter.length()).split(",");
-        Optional<String> mailFound = Stream.of(mails)
-                .filter(tmpMailToUser::containsKey)
-                .findAny();
+        for (String mail: mails) {
+            String tmpUser = tmpMailToUser.get(mail);
+            if (tmpUser != null) {
+                userName = tmpUser;
+                break;
+            }
+        }
 
-        String userName = mailFound.isPresent()?
-                tmpMailToUser.get(mailFound.get()):
-                line.substring(0, delPos);
-
-        Stream.of(mails).forEach((mail) -> tmpMailToUser.put(mail, userName));
+        String finalUserName = userName;
+        Stream.of(mails).forEach((mail) -> tmpMailToUser.put(mail, finalUserName));
     }
 
     private void mergeUsers(HashMap<String, String> tmpMailToUser) {
