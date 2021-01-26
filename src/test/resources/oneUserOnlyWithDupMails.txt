@@ -1,0 +1,1 @@
+user1 -> xxx@ya.ru, foo4@gmail.com, lol@mail.ru, asdasd@aaqwe, foo4@gmail.com, foo4@gmail.com
